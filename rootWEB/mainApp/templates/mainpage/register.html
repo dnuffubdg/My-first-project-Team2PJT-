@@ -248,7 +248,6 @@
               if (res.status === 'connected') {
                 document.getElementById('token-result').innerText = 'login success, token: ' + Kakao.Auth.getAccessToken();
               }
-              console.log('debug >>> token: ', token)
             }).catch(function(err) {
               Kakao.Auth.setAccessToken(null);
             });
