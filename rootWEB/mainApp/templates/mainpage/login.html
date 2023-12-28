@@ -24,6 +24,7 @@
         }
     }
     </script>
+    <style class="social-login-btn"></style>
     </head>
     <body class="login-page">
     <br><br><br><br><br><br>
@@ -69,6 +70,43 @@
             <a href="/find_my_account" class="find_my_account">계정 찾기</a>
             <a href="/join" class="new-membership">회원가입</a>
           </div>
+          <button class="social-login-btn kakao" onclick="kakaoRegister();">
+            <span class="icon"></span>카카오로 회원가입
+          </button>
+
+          <p id="token-result"></p>
+          <script>
+            window.Kakao.init('cb2d3c6aedb31b4dce568e90fe7eb5c9');
+
+            function kakaoRegister() {
+              window.Kakao.Auth.authorize({
+                redirectUri: 'http://127.0.0.1:8000/oauth/kakao/callback',
+              });
+            }
+
+            function displayToken() {
+              var token = getCookie('authorize-access-token');
+              if (token) {
+                Kakao.Auth.setAccessToken(token);
+                Kakao.Auth.getStatusInfo().then(function(res) {
+                  if (res.status === 'connected') {
+                    document.getElementById('token-result').innerText = 'login success, token: ' + Kakao.Auth.getAccessToken();
+                  }
+                }).catch(function(err) {
+                  Kakao.Auth.setAccessToken(null);
+                });
+              }
+            }
+
+            function getCookie(name) {
+              var parts = document.cookie.split(name + '=');
+              if (parts.length === 2) {
+                return parts[1].split(';')[0];
+              }
+            }
+
+            displayToken(); // 함수 호출 위치 변경
+          </script>
         </form>
         </div>
       </main>
@@ -79,9 +117,9 @@
       $(document).ready(function() {
         // 비밀번호 가시성 토글
         $('.password-icon').click(function() {
-          var passwordField = $('input[name="pwd"]'); // 비밀번호 입력 필드 참조
-          var eyeSlashIcon = $('#togglePassword'); // 비밀번호 아이콘 SVG 참조
-          var eyeFillIcon = $('#togglePasswordFill');
+          var passwordField = $('input[name="pwd"]');
+          var eyeSlashIcon  = $('#togglePassword');
+          var eyeFillIcon   = $('#togglePasswordFill');
 
           if (passwordField.attr('type') === "password") {
             passwordField.attr('type', 'text');

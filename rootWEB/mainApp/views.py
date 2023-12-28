@@ -197,23 +197,16 @@ class KakaoSignInCallBackView(View):
         auth_code = request.GET.get('code')
         kakao_token_api = "https://kauth.kakao.com/oauth/token"
         data = {
-            'grant_type': 'authorization_code',
-            'client_id' : os.getenv('REST_API_KEY'),
-            'redirection_uri': "http://127.0.0.1:8000/oauth/kakao/callback",
-            'code': auth_code,
+            'grant_type'      : 'authorization_code',
+            'client_id'       : os.getenv('REST_API_KEY'),
+            'redirection_uri' : "http://127.0.0.1:8000/oauth/kakao/callback",
+            'code'            : auth_code,
         }
-        token_response = requests.post(kakao_token_api, data=data)
-        access_token = token_response.json().get('access_token')
-        kakao_user_api     = "https://kapi.kakao.com/v2/user/me"
-        header             = {"Authorization": f"Bearer ${access_token}"}
-        user_information   = requests.get(kakao_user_api, headers=header).json()
-        kakao_id           = user_information["id"]
+        token_response   = requests.post(kakao_token_api, data=data)
+        access_token     = token_response.json().get('access_token')
+        kakao_user_api   = "https://kapi.kakao.com/v2/user/me"
+        header           = {"Authorization": f"Bearer ${access_token}"}
+        user_information = requests.get(kakao_user_api, headers=header).json()
+        kakao_id         = user_information["id"]
         request.session['user_id'] = kakao_id
         return redirect('/scalp/')
-
-def kakao_api(request):
-    print('debug >>> mainApp/kakao_api()')
-    context = {
-        'KAKAO_JS_KEY': os.environ.get('KAKAO_JS_KEY')
-    }
-    return render(request, 'register.html', context)
