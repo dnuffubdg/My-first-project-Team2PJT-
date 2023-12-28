@@ -2,10 +2,38 @@
 <html lang="ko">
 <head>
     <style>
-        .text-center {
-          margin-top: 100px;
-          margin-bottom: 50px;
+        .text-center-id {
+          margin-top: 80px;
+          margin-bottom: 25px;
         }
+        #findIdButton {
+          margin-bottom: 40px;
+        }
+        .divider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        }
+        .line {
+        height: 1px;
+        width: 30%;
+        background-color: #c4c4c4;
+        }
+        .or-text {
+        margin: 0 10px;
+        color: #757575;
+        font-weight: bold;
+        }
+        .text-center-pwd {
+          margin-top: 0px;
+          margin-bottom: 25px;
+        }
+        #resetPasswordButton {
+          margin-top: 10px;
+          margin-bottom: 40px;
+        }
+
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,13 +46,32 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6 offset-md-3">
-                <h2 class="text-center">계정 찾기</h2>
+                <h3 class="text-center-id">계정 찾기</h3>
                 <form>
                     <div class="form-group">
-                        <label for="emailOrUsername">이메일 주소 또는 사용자 이름</label>
                         <input type="text" class="form-control" id="emailOrUsername" placeholder="이메일 주소 또는 사용자 이름 입력">
                     </div>
-                    <button type="submit" class="btn btn-primary">계정 찾기</button>
+                    <button type="submit" class="btn btn-primary" id="findIdButton">계정 찾기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="divider">
+            <span class="line"></span>
+            <span class="or-text">또는</span>
+            <span class="line"></span>
+          </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h3 class="text-center-pwd">비밀번호 찾기</h3>
+                <form>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" placeholder="이메일 주소 입력">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="resetPasswordButton">비밀번호 재설정 링크 보내기</button>
                 </form>
             </div>
         </div>
