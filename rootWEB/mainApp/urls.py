@@ -21,6 +21,7 @@ urlpatterns = [
     path('check/', views.check, name = 'check'),
     path('oauth/kakao/callback/', views.KakaoSignInCallBackView.as_view(), name='kakao_callback'),
     path('reset-password/', views.reset_password, name='reset_password'),
+    path('show_id/', views.show_id, name="show_id'")
 ]
 
 

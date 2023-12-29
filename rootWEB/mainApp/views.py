@@ -98,7 +98,8 @@ def login(request) :
                     # 로그인 처리
                     request.session['user_id'] = user.user_id
                     print('debug >>> 로그인 성공!')
-                    return redirect('index')
+                    context = {'message': '로그인 성공!'}
+                    return render(request, 'mainpage/index.html', context=context)
             except User_tbl.DoesNotExist:
                 print('debug >>> 로그인 실패 1: ', request)
                 cache.set(fail_count_key, fail_count + 1, timeout=300)  # 실패 카운트 증가
@@ -218,6 +219,19 @@ class KakaoSignInCallBackView(View):
         return redirect('/scalp/')
 
 
+def show_id(request):
+    print('debug >> mainApp /show_id')
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User_tbl.objects.get(user_email=email)
+            print('debug >>>>> user: ', user)
+            return JsonResponse({'user_id': user.user_id})
+        except User_tbl.DoesNotExist:
+            return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
 def reset_password(request):
     print('debug >> mainApp /find_pwd')
     if request.method == 'POST':
@@ -227,17 +241,19 @@ def reset_password(request):
         # 사용자 검증 및 임시 비밀번호 생성 및 이메일 전송 로직 구현.
         try:
             user = User_tbl.objects.get(user_id=username, user_email=email)
-            print('debug >>>>> ' , user)
+            # print('debug >>>>> ' , user)
         except User_tbl.DoesNotExist:
             return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
 
         # 임시 비밀번호 생성
         alphabet = string.ascii_letters + string.digits
         new_password = ''.join(secrets.choice(alphabet) for i in range(8))
+        # 생성된 비밀번호 저장 - 방법 1
         # hashed_password = make_password(new_password)
         # user.user_pw = hashed_password
+        # 생성된 비밀번호 저장 - 방법 2
         user.user_pwd = new_password
-        print('debug >>>>> change pwd ' , user.user_pwd)
+        # print('debug >>>>> change pwd ' , user.user_pwd)
         user.save()
 
         # 이메일 전송
