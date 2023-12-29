@@ -236,7 +236,7 @@ def reset_password(request):
     print('debug >> mainApp /find_pwd')
     if request.method == 'POST':
         username = request.POST.get('id')
-        email = request.POST.get('email')
+        email    = request.POST.get('email')
 
         # 사용자 검증 및 임시 비밀번호 생성 및 이메일 전송 로직 구현.
         try:
