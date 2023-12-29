@@ -30,11 +30,17 @@ from dotenv import load_dotenv
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
 
+from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
 from django.utils import timezone
 from .utils import get_tokens_for_user
 import requests
 import uuid
+
+import string
+import secrets
+from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password
 
 load_dotenv()
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -210,3 +216,36 @@ class KakaoSignInCallBackView(View):
         kakao_id         = user_information["id"]
         request.session['user_id'] = kakao_id
         return redirect('/scalp/')
+
+
+def reset_password(request):
+    print('debug >> mainApp /find_pwd')
+    if request.method == 'POST':
+        username = request.POST.get('id')
+        email = request.POST.get('email')
+
+        # 사용자 검증 및 임시 비밀번호 생성 및 이메일 전송 로직 구현.
+        try:
+            user = User_tbl.objects.get(user_id=username, user_email=email)
+        except User_tbl.DoesNotExist:
+            return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
+
+        # 임시 비밀번호 생성
+        alphabet = string.ascii_letters + string.digits
+        new_password = ''.join(secrets.choice(alphabet) for i in range(8))
+        hashed_password = make_password(new_password)
+        user.user_pw = hashed_password
+        user.save()
+
+        # 이메일 전송
+        send_mail(
+            'Your New Password',
+            f'Your new password is: {new_password}',
+            "jhasadf@gmail.com",# 발신자 이메일 주소
+            [user.user_email],  # 수신자 이메일 주소
+            fail_silently=False,
+        )
+
+        return JsonResponse({'message': '임시 비밀번호가 이메일로 발송되었습니다.'})
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)

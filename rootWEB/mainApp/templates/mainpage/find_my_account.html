@@ -52,7 +52,7 @@
                 <h3 class="text-center-id">계정 찾기</h3>
                 <form>
                     <div class="form-group">
-                        <input type="text" class="form-control" id="emailOrUsername" placeholder="이메일 주소 또는 사용자 이름 입력">
+                        <input type="text" class="form-control" id="emailOrUsername" placeholder="이메일 주소 입력">
                     </div>
                     <button type="submit" class="btn btn-primary" id="findIdButton">계정 찾기</button>
                 </form>
@@ -71,6 +71,7 @@
             <div class="col-md-6 offset-md-3">
                 <h3 class="text-center-pwd">비밀번호 찾기</h3>
                 <form>
+                    {% csrf_token %}
                     <div class="form-group">
                         <input type="text" class="form-control" id="username_field" placeholder="아이디 입력">
                         <input type="email" class="form-control" id="email_field" placeholder="이메일 주소 입력">
@@ -82,9 +83,58 @@
     </div>
 
     <!-- 부트스트랩 JS 및 의존성 파일 추가 -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $("#resetPasswordButton").click(function(event) {
+            event.preventDefault()
+
+            const username = $("#username_field").val();
+            const email    = $("#email_field").val();
+            console.log(username, email)
+            alert("임시 비밀번호가 입력하신 이메일로 발송되었습니다!")
+
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+
+
+            $.ajax({
+                url: 'http://127.0.0.1:8000/reset-password/',
+                type: 'POST',
+                data: {
+                    id   : username,
+                    email: email
+                },
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                success: function(response) {
+                    alert("임시 비밀번호가 입력하신 이메일로 발송되었습니다!");
+                },
+                error: function(xhr, status, error) {
+                    // 오류 응답 처리
+                    alert("오류발생" + error);
+                }
+            });
+        });
+    });
+    </script>
     {% include 'footer.html' %}
 </body>
 </html>
