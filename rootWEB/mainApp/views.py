@@ -227,14 +227,17 @@ def reset_password(request):
         # 사용자 검증 및 임시 비밀번호 생성 및 이메일 전송 로직 구현.
         try:
             user = User_tbl.objects.get(user_id=username, user_email=email)
+            print('debug >>>>> ' , user)
         except User_tbl.DoesNotExist:
             return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
 
         # 임시 비밀번호 생성
         alphabet = string.ascii_letters + string.digits
         new_password = ''.join(secrets.choice(alphabet) for i in range(8))
-        hashed_password = make_password(new_password)
-        user.user_pw = hashed_password
+        # hashed_password = make_password(new_password)
+        # user.user_pw = hashed_password
+        user.user_pwd = new_password
+        print('debug >>>>> change pwd ' , user.user_pwd)
         user.save()
 
         # 이메일 전송
