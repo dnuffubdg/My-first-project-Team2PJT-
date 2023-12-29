@@ -245,7 +245,6 @@ def reset_password(request):
             [user.user_email],  # 수신자 이메일 주소
             fail_silently=False,
         )
-
         return JsonResponse({'message': '임시 비밀번호가 이메일로 발송되었습니다.'})
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
