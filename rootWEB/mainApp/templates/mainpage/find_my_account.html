@@ -3,36 +3,39 @@
 <head>
     <style>
         .text-center-id {
-          margin-top: 105px;
-          margin-bottom: 25px;
+            margin-top: 105px;
+            margin-bottom: 25px;
         }
         #findIdButton {
-          margin-top: 10px;
-          margin-bottom: 40px;
+            margin-top: 10px;
+            margin-bottom: 40px;
         }
         .divider {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
         }
         .line {
-        height: 1px;
-        width: 30%;
-        background-color: #c4c4c4;
+            height: 1px;
+            width: 30%;
+            background-color: #c4c4c4;
         }
         .or-text {
-        margin: 0 10px;
-        color: #757575;
-        font-weight: bold;
+            margin: 0 10px;
+            color: #757575;
+            font-weight: bold;
+        }
+        #username_field {
+            margin-bottom: 2.5px;
         }
         .text-center-pwd {
-          margin-top: -13px;
-          margin-bottom: 25px;
+            margin-top: -13px;
+            margin-bottom: 25px;
         }
         #resetPasswordButton {
-          margin-top: 10px;
-          margin-bottom: 80px;
+            margin-top: 10px;
+            margin-bottom: 80px;
         }
     </style>
     <meta charset="UTF-8">
@@ -69,7 +72,8 @@
                 <h3 class="text-center-pwd">비밀번호 찾기</h3>
                 <form>
                     <div class="form-group">
-                        <input type="email" class="form-control" id="email" placeholder="이메일 주소 입력">
+                        <input type="text" class="form-control" id="username_field" placeholder="아이디 입력">
+                        <input type="email" class="form-control" id="email_field" placeholder="이메일 주소 입력">
                     </div>
                     <button type="submit" class="btn btn-primary" id="resetPasswordButton">비밀번호 재설정 링크 보내기</button>
                 </form>
