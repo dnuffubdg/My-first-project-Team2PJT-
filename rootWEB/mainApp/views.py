@@ -214,7 +214,7 @@ class KakaoSignInCallBackView(View):
 
         data = {
             'grant_type'      : 'authorization_code',
-            'client_id'       : os.getenv('REST_API_KEY'),
+            'client_id'       : os.getenv('KAKAO_REST_API_KEY'),
             'redirection_uri' : "http://127.0.0.1:8000/oauth/kakao/callback",
             'code'            : auth_code,
         }
