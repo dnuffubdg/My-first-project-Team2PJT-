@@ -214,6 +214,7 @@ class KakaoSignInCallBackView(View):
         kakao_user_api   = "https://kapi.kakao.com/v2/user/me"
         header           = {"Authorization": f"Bearer ${access_token}"}
         user_information = requests.get(kakao_user_api, headers=header).json()
+        print(user_information)
         kakao_id         = user_information["id"]
         request.session['user_id'] = kakao_id
         return redirect('/scalp/')
