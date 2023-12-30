@@ -98,8 +98,13 @@ def login(request) :
                     # 로그인 처리
                     request.session['user_id'] = user.user_id
                     print('debug >>> 로그인 성공!')
-                    context = {'message': '로그인 성공!'}
-                    return render(request, 'mainpage/index.html', context=context)
+
+                    # # 방법 1 - context를 심으려고 했지만 로그인이 성공하면 url이 127.0.0.1/login/my로 바뀌어버려서 '/my/'처럼 동적으로 처리하지 않으면 페이지 에러가 난다. 어떻게 하지?
+                    # message = {'message': '로그인 성공!'}
+                    # return render(request, 'mainpage/index.html', context=message)
+                    # 방법 2 - context 대신 session을 심어보자. => 실패: Django와 JavaScript 간의 데이터 교환은 서버에서 클라이언트로의 단방향 흐름으로만 가능. 클라이언트 사이드에서 서버 사이드의 데이터를 직접 조작하는 것은 불가능.
+                    # request.session['message'] = '로그인 성공!'
+                    return redirect('/my/')
             except User_tbl.DoesNotExist:
                 print('debug >>> 로그인 실패 1: ', request)
                 cache.set(fail_count_key, fail_count + 1, timeout=300)  # 실패 카운트 증가
@@ -247,6 +252,8 @@ def show_id(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
+from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 def reset_password(request):
     print('debug >> mainApp /find_pwd')
     if request.method == 'POST':
@@ -263,7 +270,7 @@ def reset_password(request):
         # 임시 비밀번호 생성
         alphabet = string.ascii_letters + string.digits
         new_password = ''.join(secrets.choice(alphabet) for i in range(8))
-        # 생성된 비밀번호 저장 - 방법 1
+        # # 생성된 비밀번호 저장 - 방법 1
         # hashed_password = make_password(new_password)
         # user.user_pw = hashed_password
         # 생성된 비밀번호 저장 - 방법 2
@@ -271,14 +278,66 @@ def reset_password(request):
         # print('debug >>>>> change pwd ' , user.user_pwd)
         user.save()
 
-        # 이메일 전송
-        send_mail(
-            'Your New Password (from dubu - 두피를 부탁해!)',
-            f'Your new password is: {new_password}',
-            "jhasadf@gmail.com",# 발신자 이메일 주소
-            [user.user_email],  # 수신자 이메일 주소
-            fail_silently=False,
-        )
+        # # 이메일 전송 - 방법 1
+        # send_mail(
+        #     'Your New Password (from dubu - 두피를 부탁해!)',
+        #     f'Your new password is: {new_password}',
+        #     "jhasadf@gmail.com",# 발신자 이메일 주소
+        #     [user.user_email],  # 수신자 이메일 주소
+        #     fail_silently=False,
+        # )
+        # 이메일 전송 - 방법 2
+
+        subject = 'Your New Password (from dubu - 두피를 부탁해!)'
+        message = '''
+        <html>
+            <head>
+                <style>
+                    .banner {{
+                        //background-image: url('/static/img/DUBU icon copy.png');
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                        color: #ffffff;
+                        text-align: center;
+                        padding: 50px;
+                    }}
+                    .content {{
+                        text-align: center;
+                        background-color: #f8f8f8;
+                        padding: 20px;
+                        margin-top: 20px;
+                    }}
+                    .footer {{
+                        text-align: center;
+                        padding: 10px;
+                        background-color: #333;
+                        color: white;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class="banner">
+                    <h1>Take Care of Your Scalp</h1><br>
+                    <p>Discover your personalized scalp care solution with DUBU.</p>
+                </div>
+                <br><br>
+                <div class="content">
+                    <p>Your new password is: <strong>{}</strong></p>
+                    <p>Please use this new password to login to your account and ensure to update your password once logged in.</p>
+                </div>
+                <br><br>
+                <div class="footer">
+                    <p>This is an automated message. Please do not reply to this email.</p>
+                </div>
+            </body>
+        </html>
+        '''.format(new_password)
+        from_email = 'jhasadf@gmail.com'
+        to_list = [user.user_email]
+
+        email = EmailMessage(subject, message, from_email, to_list)
+        email.content_subtype = "html"
+        email.send()
         return JsonResponse({'message': '임시 비밀번호가 이메일로 발송되었습니다.'})
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
