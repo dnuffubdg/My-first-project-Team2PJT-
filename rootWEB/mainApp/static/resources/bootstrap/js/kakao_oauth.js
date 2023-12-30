@@ -1,7 +1,4 @@
 Kakao.init('d8fa61f9205974a778331d9f768fec30');
-console.log(Kakao); // Kakao 객체 상태 확인
-console.log(Kakao.Auth); // Kakao.Auth 객체 상태 확인
-console.log(kakao_js_key)
 
 function kakaoRegister() {
   Kakao.Auth.authorize({
