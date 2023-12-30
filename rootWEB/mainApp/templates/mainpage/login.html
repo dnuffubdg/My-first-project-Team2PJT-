@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="{% static 'resources/bootstrap/css/login.css' %}">
     <script defer src="{% static 'resources/bootstrap/js/login.js' %}"></script>
     <script src="{% static 'resources/plugins/jQuery/jQuery-2.1.4.min.js' %}"></script>
+
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script src="{% static 'resources/bootstrap/js/kakao_oauth.js' %}"></script>
     <script>
     window.onload = function() {
         // 템플릿 컨텍스트에 메시지가 있는지 확인
@@ -71,38 +74,6 @@
             <a href="/join" class="new-membership">회원가입</a>
           </div>
           <p id="token-result"></p>
-          <script>
-            window.Kakao.init('d8fa61f9205974a778331d9f768fec30'); //KAKAO_JS_KEY
-
-            function kakaoRegister() {
-              window.Kakao.Auth.authorize({
-                redirectUri: 'http://127.0.0.1:8000/oauth/kakao/callback',
-              });
-            }
-
-            function displayToken() {
-              var token = getCookie('authorize-access-token');
-              if (token) {
-                Kakao.Auth.setAccessToken(token);
-                Kakao.Auth.getStatusInfo().then(function(res) {
-                  if (res.status === 'connected') {
-                    document.getElementById('token-result').innerText = 'login success, token: ' + Kakao.Auth.getAccessToken();
-                  }
-                }).catch(function(err) {
-                  Kakao.Auth.setAccessToken(null);
-                });
-              }
-            }
-
-            function getCookie(name) {
-              var parts = document.cookie.split(name + '=');
-              if (parts.length === 2) {
-                return parts[1].split(';')[0];
-              }
-            }
-
-            displayToken(); // 함수 호출 위치 변경
-          </script>
         </form>
         </div>
       </main>

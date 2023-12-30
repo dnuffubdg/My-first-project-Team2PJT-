@@ -188,10 +188,12 @@ def google_auth(request):
         redirect_uri='http://127.0.0.1:8000/auth/google/callback'
     )
 
+
 def check_user_id(request):
     user_id = request.GET.get('id', None)
     is_taken = User_tbl.objects.filter(user_id=user_id).exists()
     return JsonResponse({'is_taken': is_taken})
+
 
 def check(request) :
     print('debug >> mainApp /find_pwd')
@@ -202,6 +204,9 @@ from django.views import View
 class KakaoSignInCallBackView(View):
     def get(self, request):
         print('debug >>>>> get()')
+
+        request.session["kakao_js_key"] = os.getenv("KAKAO_JS_KEY")
+        # print("DEBUG >>>>> kakao_js_key: ", os.getenv("KAKAO_JS_KEY"))
 
         auth_code = request.GET.get('code')
 
@@ -223,10 +228,10 @@ class KakaoSignInCallBackView(View):
         user_information = requests.get(kakao_user_api, headers=header).json()
         # print('debug >>>>> user_information: ', user_information)
 
-        kakao_id         = user_information["id"]
+        kakao_id                   = user_information["id"]
         request.session['user_id'] = kakao_id
 
-        return redirect('/scalp/')
+        return redirect('/check/')
 
 
 def show_id(request):
@@ -268,7 +273,7 @@ def reset_password(request):
 
         # 이메일 전송
         send_mail(
-            'Your New Password',
+            'Your New Password (from dubu - 두피를 부탁해!)',
             f'Your new password is: {new_password}',
             "jhasadf@gmail.com",# 발신자 이메일 주소
             [user.user_email],  # 수신자 이메일 주소
